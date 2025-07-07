@@ -2,6 +2,18 @@ using MockApi;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient<PriceService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
+app.UseCors("AllowAll");
 
 
 // CORS policy ekle
@@ -25,6 +37,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient<PriceService>();
 
 var app = builder.Build();
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+app.Urls.Add($"http://*:{port}");
 // CORS middleware'i kullan
 app.UseCors("AllowReactApp");
 
