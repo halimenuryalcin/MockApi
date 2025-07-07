@@ -1,12 +1,12 @@
-# 1. Aşama: Build
+# 1. SDK katmanı
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
-COPY . ./
-RUN dotnet restore
-RUN dotnet publish -c Release -o out
+WORKDIR /src
+COPY . .                              # Her şeyi kopyala
+RUN dotnet restore                    # Restore yap
+RUN dotnet publish -c Release -o /app # Yayınla
 
-# 2. Aşama: Runtime
+# 2. Runtime katmanı
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/out ./
-ENTRYPOINT ["dotnet", "MockApi.dll"]
+COPY --from=build /app ./
+ENTRYPOINT ["dotnet", "MockApi.dll"]  # .dll adını .csproj'e göre AYARLA!
